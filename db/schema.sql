@@ -1,1 +1,1 @@
--- MediAgenda schema
+-- Esquema de la base de datos de MediAgenda (SQLite).
