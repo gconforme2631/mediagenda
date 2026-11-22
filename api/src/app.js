@@ -1,8 +1,9 @@
-// Construcción de la aplicación Express: middlewares y registro de rutas.
+// Construcción de la aplicación Express: middlewares, rutas y manejo de errores.
 import express from 'express';
 import cors from 'cors';
 import { env } from './config/env.js';
 import saludRoutes from './routes/salud.routes.js';
+import { rutaNoEncontrada, manejadorErrores } from './middlewares/errores.middleware.js';
 
 export function createApp() {
   const app = express();
@@ -13,6 +14,10 @@ export function createApp() {
 
   // Rutas
   app.use('/api/salud', saludRoutes);
+
+  // Manejo de errores (siempre al final)
+  app.use(rutaNoEncontrada);
+  app.use(manejadorErrores);
 
   return app;
 }
