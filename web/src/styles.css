@@ -1,1 +1,43 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales: variables de diseño y base del documento. */
+:root {
+  /* Colores */
+  --color-primario: #0f766e;
+  --color-primario-oscuro: #115e59;
+  --color-fondo: #f5f7f8;
+  --color-superficie: #ffffff;
+  --color-texto: #1f2933;
+  --color-texto-suave: #5f6b76;
+  --color-borde: #d9e0e5;
+  --color-error: #b42318;
+  --color-exito: #067647;
+
+  /* Forma */
+  --radio: 8px;
+  --sombra: 0 1px 3px rgb(0 0 0 / 0.08);
+  --ancho-maximo: 1100px;
+}
+
+html {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%; /* evita que el navegador móvil agrande el texto */
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.5;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+}

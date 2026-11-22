@@ -1,0 +1,100 @@
+/* Layout principal: cabecera, menú y contenedor. */
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-primario);
+  color: #fff;
+  box-shadow: var(--sombra);
+}
+
+.cabecera__contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: var(--ancho-maximo);
+  min-height: 56px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.marca {
+  overflow: hidden;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Menú */
+.menu {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.menu a {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radio);
+  color: rgb(255 255 255 / 0.85);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.menu a:hover {
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+}
+
+.menu a.activo {
+  background: rgb(255 255 255 / 0.22);
+  color: #fff;
+}
+
+.menu a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Contenido */
+.contenido {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 6rem; /* espacio inferior para el botón flotante en celular */
+}
+
+/* Celular */
+@media (max-width: 600px) {
+  .cabecera__contenido {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 0.5rem 0;
+  }
+
+  .marca {
+    padding-bottom: 0.25rem;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .menu {
+    gap: 0;
+  }
+
+  .menu a {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0.25rem;
+    border-radius: var(--radio) var(--radio) 0 0;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .contenido {
+    padding: 1rem 0.75rem 6rem;
+  }
+}
