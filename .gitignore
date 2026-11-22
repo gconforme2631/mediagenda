@@ -1,0 +1,23 @@
+# Archivos excluidos del repositorio.
+
+# Dependencias
+node_modules/
+
+# Configuración local
+.env
+
+# Base de datos SQLite (se genera desde db/schema.sql)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Angular
+web/.angular/
+dist/
+coverage/
+
+# Sistema operativo y editor
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,0 +1,40 @@
+/* Aviso flotante de confirmación o error. */
+.aviso {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: calc(100% - 2rem);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  background: var(--color-exito);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+  color: #fff;
+  transform: translateX(-50%);
+}
+
+.aviso--error {
+  background: var(--color-error);
+}
+
+.aviso__cerrar {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Celular: abajo, sobre el botón flotante */
+@media (max-width: 600px) {
+  .aviso {
+    top: auto;
+    bottom: 5.5rem;
+    justify-content: space-between; /* × alineada a la derecha */
+    width: calc(100% - 1.5rem);
+  }
+}
