@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+
+# SQLite
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Angular
+web/.angular/
+dist/
+coverage/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
