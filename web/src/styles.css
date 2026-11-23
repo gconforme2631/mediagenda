@@ -301,6 +301,7 @@ h1 {
 /* ===== Celular ===== */
 @media (max-width: 600px) {
   .buscador {
+    flex-basis: 100%;
     max-width: none;
   }
 
