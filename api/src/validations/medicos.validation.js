@@ -15,7 +15,7 @@ const CAMPOS_OBLIGATORIOS = [
 const CAMPOS_DE_LETRAS = ['nombres', 'apellidos', 'especialidad'];
 
 function texto(valor) {
-  return valor == null ? '' : String(valor).trim().replace(/\s+/g, ' ');
+  return typeof valor === 'string' ? valor.trim().replace(/\s+/g, ' ') : '';
 }
 
 function normalizar(datos) {
