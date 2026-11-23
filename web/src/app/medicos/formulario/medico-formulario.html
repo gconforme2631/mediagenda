@@ -1,0 +1,28 @@
+<!-- Formulario de médicos: el mismo para registrar y editar. -->
+<div class="pagina-encabezado">
+  <h1>{{ id() ? 'Editar médico' : 'Nuevo médico' }}</h1>
+</div>
+
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  @for (campo of campos; track campo.nombre) {
+    <div class="campo" [class.campo--completo]="campo.completo">
+      <label [attr.for]="campo.nombre">{{ campo.etiqueta }}</label>
+      <input
+        [id]="campo.nombre"
+        [type]="campo.tipo"
+        [formControlName]="campo.nombre"
+        [attr.autocomplete]="campo.autocompletar"
+      />
+      @if (mensajeError(campo); as mensaje) {
+        <p class="campo__error">{{ mensaje }}</p>
+      }
+    </div>
+  }
+
+  <div class="formulario__acciones">
+    <a routerLink="/medicos" class="btn btn--secundario">Cancelar</a>
+    <button type="submit" class="btn btn--primario" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </div>
+</form>
