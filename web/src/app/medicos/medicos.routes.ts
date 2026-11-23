@@ -1,8 +1,5 @@
 // Rutas del módulo Médicos (integrante 2).
 import { Routes } from '@angular/router';
-import { EnConstruccion } from '../shared/en-construccion/en-construccion';
+import { MedicosLista } from './lista/medicos-lista';
 
-export const MEDICOS_ROUTES: Routes = [
-  // TODO: lista (''), nuevo ('nuevo') y edición (':id/editar')
-  { path: '', component: EnConstruccion, data: { titulo: 'Médicos' } },
-];
+export const MEDICOS_ROUTES: Routes = [{ path: '', component: MedicosLista }];
