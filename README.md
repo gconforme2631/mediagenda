@@ -11,7 +11,7 @@ Actividad AA-1 · Plataformas de Desarrollo de Software · Maestría en Ingenier
 | Integrante | Usuario GitHub | Responsabilidad |
 |---|---|---|
 | 1. Gustavo Conforme | gconforme2631 | Repositorio, estructura, conexión SQLite, formato de errores, Angular base, módulo Pacientes |
-| 2. Diego Albuja | [usuario] | `schema.sql`, módulo Médicos, diseño responsive general |
+| 2. Diego Albuja | dfalbuja  | `schema.sql`, módulo Médicos, diseño responsive general |
 | 3. Ricardo Sigcha | [usuario] | Datos de prueba iniciales, módulo Citas |
 
 ## Tecnologías
@@ -124,8 +124,8 @@ npm test
 | GET | `/api/salud` | Disponible |
 | GET, POST | `/api/pacientes` | En desarrollo |
 | GET, PUT, DELETE | `/api/pacientes/:id` | En desarrollo |
-| GET, POST | `/api/medicos` | En desarrollo |
-| GET, PUT, DELETE | `/api/medicos/:id` | En desarrollo |
+| GET, POST | `/api/medicos` | Disponible |
+| GET, PUT, DELETE | `/api/medicos/:id` | Disponible |
 | — | `/api/citas` | En desarrollo |
 
 ## Convenciones del proyecto
@@ -164,6 +164,7 @@ api/tests/medicos.test.js
 - Avisos de confirmación: `AvisoService` de `shared/aviso/aviso.service.ts` → `exito('...')` o `error('...')`.
 - El mensaje de API caída funciona solo para todos los módulos.
 - **Estilos:** usar las clases comunes de `src/styles.css` (`.pagina-encabezado`, `.btn`, `.buscador`, `.tabla`, `.tarjetas`, `.formulario`, `.campo`, `.campo__error`, `.vacio`, `.btn--agregar`, `.btn--flotante`) y las variables CSS (`--color-primario`, etc.). Si hace falta una clase nueva, se agrega en `styles.css` y se avisa al grupo.
+- **Responsive:** cada lista lleva la `.tabla` y las `.tarjetas`. La tabla se ve en escritorio (más de 900 px); las tarjetas, en tablet (2 columnas) y celular (1 columna). En celular el botón de agregar pasa a ser el `.btn--flotante`. Ejemplo: `medicos/lista/`.
 
 ### Código
 

@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { env } from './config/env.js';
 import saludRoutes from './routes/salud.routes.js';
+import medicosRoutes from './routes/medicos.routes.js';
 import { rutaNoEncontrada, manejadorErrores } from './middlewares/errores.middleware.js';
 
 export function createApp() {
@@ -14,6 +15,7 @@ export function createApp() {
 
   // Rutas
   app.use('/api/salud', saludRoutes);
+  app.use('/api/medicos', medicosRoutes);
 
   // Manejo de errores (siempre al final)
   app.use(rutaNoEncontrada);
