@@ -12,7 +12,7 @@ Actividad AA-1 · Plataformas de Desarrollo de Software · Maestría en Ingenier
 |---|---|---|
 | 1. Gustavo Conforme | gconforme2631 | Repositorio, estructura, conexión SQLite, formato de errores, Angular base, módulo Pacientes |
 | 2. Diego Albuja | dfalbuja  | `schema.sql`, módulo Médicos, diseño responsive general |
-| 3. Ricardo Sigcha | [usuario] | Datos de prueba iniciales, módulo Citas |
+| 3. Ricardo Sigcha | RickyLeo2016 | Datos de prueba iniciales, módulo Citas |
 
 ## Tecnologías
 
@@ -98,8 +98,13 @@ ng serve
 ## Pruebas
 
 ```bash
+# Backend: 35 pruebas (Pacientes 22, Médicos 13)
 cd api
 npm test
+
+# Frontend
+cd ../web
+ng test --watch=false
 ```
 
 ## API
@@ -122,11 +127,31 @@ npm test
 | Método | Ruta | Estado |
 |---|---|---|
 | GET | `/api/salud` | Disponible |
-| GET, POST | `/api/pacientes` | En desarrollo |
-| GET, PUT, DELETE | `/api/pacientes/:id` | En desarrollo |
+| GET, POST | `/api/pacientes` | Disponible |
+| GET, PUT, DELETE | `/api/pacientes/:id` | Disponible |
 | GET, POST | `/api/medicos` | Disponible |
 | GET, PUT, DELETE | `/api/medicos/:id` | Disponible |
 | — | `/api/citas` | En desarrollo |
+
+### Reglas del módulo Pacientes
+
+| Campo | Validación (cliente y servidor) |
+|---|---|
+| `cedula` | Obligatoria, cédula ecuatoriana válida: provincia 01-24 o 30, tercer dígito menor a 6 y dígito verificador (módulo 10). Única |
+| `nombres`, `apellidos` | Obligatorios, solo letras (incluye tildes, ñ y ü) |
+| `fecha_nacimiento` | Obligatoria, formato `YYYY-MM-DD`, no futura |
+| `telefono` | Obligatorio, celular `09XXXXXXXX` |
+| `correo` | Obligatorio, formato de correo; se guarda en minúsculas |
+
+| Situación | Respuesta |
+|---|---|
+| Datos inválidos | 400 con el error de cada campo |
+| Paciente no existe | 404 · *Paciente no encontrado* |
+| Cédula registrada por otro paciente | 409 · *Ya existe un paciente con esa cédula* |
+| Eliminar un paciente con citas | 409 · *No se puede eliminar un paciente con citas registradas* |
+
+La lista se ordena por apellidos y nombres en español (Á junto a A, ñ después de n).
+La validación de cédula para Angular está en `web/src/app/pacientes/paciente.validadores.ts` (`esCedulaValida`), por si otro módulo la necesita.
 
 ## Convenciones del proyecto
 
@@ -164,7 +189,7 @@ api/tests/medicos.test.js
 - Avisos de confirmación: `AvisoService` de `shared/aviso/aviso.service.ts` → `exito('...')` o `error('...')`.
 - El mensaje de API caída funciona solo para todos los módulos.
 - **Estilos:** usar las clases comunes de `src/styles.css` (`.pagina-encabezado`, `.btn`, `.buscador`, `.tabla`, `.tarjetas`, `.formulario`, `.campo`, `.campo__error`, `.vacio`, `.btn--agregar`, `.btn--flotante`) y las variables CSS (`--color-primario`, etc.). Si hace falta una clase nueva, se agrega en `styles.css` y se avisa al grupo.
-- **Responsive:** cada lista lleva la `.tabla` y las `.tarjetas`. La tabla se ve en escritorio (más de 900 px); las tarjetas, en tablet (2 columnas) y celular (1 columna). En celular el botón de agregar pasa a ser el `.btn--flotante`. Ejemplo: `medicos/lista/`.
+- **Responsive:** cada lista lleva la `.tabla` y las `.tarjetas`. La tabla se ve en escritorio (más de 900 px); las tarjetas, en tablet (2 columnas) y celular (1 columna). En celular el botón de agregar pasa a ser el `.btn--flotante`. Ejemplos: `medicos/lista/` y `pacientes/lista/`.
 
 ### Código
 
