@@ -3,10 +3,14 @@ import { getDb } from '../config/database.js';
 
 const COLUMNAS = 'id, cedula, nombres, apellidos, fecha_nacimiento, telefono, correo';
 
+// SQLite ordena por bytes ('Álava' quedaría después de 'Muñoz'); se ordena en español
+const ORDEN_ES = new Intl.Collator('es', { sensitivity: 'base' });
+
 export function listar() {
   return getDb()
-    .prepare(`SELECT ${COLUMNAS} FROM pacientes ORDER BY apellidos, nombres`)
-    .all();
+    .prepare(`SELECT ${COLUMNAS} FROM pacientes`)
+    .all()
+    .sort((a, b) => ORDEN_ES.compare(a.apellidos, b.apellidos) || ORDEN_ES.compare(a.nombres, b.nombres));
 }
 
 export function buscarPorId(id) {
