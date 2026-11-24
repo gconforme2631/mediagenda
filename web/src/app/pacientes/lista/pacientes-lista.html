@@ -1,0 +1,72 @@
+<!-- Lista de pacientes: buscador, tabla en escritorio y tarjetas en celular. -->
+<div class="pagina-encabezado">
+  <h1>Pacientes</h1>
+  <input
+    #buscador
+    type="search"
+    class="buscador"
+    placeholder="Buscar por cédula, nombres o apellidos"
+    aria-label="Buscar pacientes"
+    (input)="busqueda.set(buscador.value)"
+  />
+  <a routerLink="nuevo" class="btn btn--primario btn--agregar">+ Nuevo paciente</a>
+</div>
+
+<ng-template #acciones let-paciente>
+  <a [routerLink]="[paciente.id, 'editar']" class="btn btn--secundario btn--pequeno">Editar</a>
+  <button type="button" class="btn btn--peligro btn--pequeno" (click)="eliminar(paciente)">
+    Eliminar
+  </button>
+</ng-template>
+
+@if (cargando()) {
+  <p class="vacio">Cargando pacientes…</p>
+} @else if (filtrados().length === 0) {
+  <p class="vacio">
+    {{ busqueda() ? 'Ningún paciente coincide con la búsqueda.' : 'Aún no hay pacientes registrados.' }}
+  </p>
+} @else {
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Paciente</th>
+        <th>Cédula</th>
+        <th>Nacimiento</th>
+        <th>Celular</th>
+        <th>Correo</th>
+        <th><span class="tabla__acciones">Acciones</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (paciente of filtrados(); track paciente.id) {
+        <tr>
+          <td>{{ paciente.apellidos }}, {{ paciente.nombres }}</td>
+          <td>{{ paciente.cedula }}</td>
+          <td>{{ formatoFecha(paciente.fecha_nacimiento) }}</td>
+          <td>{{ paciente.telefono }}</td>
+          <td>{{ paciente.correo }}</td>
+          <td>
+            <div class="tabla__acciones">
+              <ng-container *ngTemplateOutlet="acciones; context: { $implicit: paciente }" />
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="tarjetas">
+    @for (paciente of filtrados(); track paciente.id) {
+      <article class="tarjeta">
+        <h2 class="tarjeta__titulo">{{ paciente.apellidos }}, {{ paciente.nombres }}</h2>
+        <p class="tarjeta__dato">C.I. {{ paciente.cedula }} · {{ formatoFecha(paciente.fecha_nacimiento) }}</p>
+        <p class="tarjeta__dato">{{ paciente.telefono }} · {{ paciente.correo }}</p>
+        <div class="tarjeta__acciones">
+          <ng-container *ngTemplateOutlet="acciones; context: { $implicit: paciente }" />
+        </div>
+      </article>
+    }
+  </div>
+}
+
+<a routerLink="nuevo" class="btn btn--primario btn--flotante">+ Nuevo paciente</a>

@@ -1,8 +1,8 @@
 // Rutas del módulo Pacientes.
 import { Routes } from '@angular/router';
-import { EnConstruccion } from '../shared/en-construccion/en-construccion';
+import { PacientesLista } from './lista/pacientes-lista';
 
 export const PACIENTES_ROUTES: Routes = [
-  // TODO: lista (''), nuevo ('nuevo') y edición (':id/editar')
-  { path: '', component: EnConstruccion, data: { titulo: 'Pacientes' } },
+  { path: '', component: PacientesLista },
+  // TODO: nuevo ('nuevo') y edición (':id/editar') con el formulario
 ];
