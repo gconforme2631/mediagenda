@@ -107,8 +107,7 @@ export class Agendarcita implements OnInit {
   //#region CONFIGURACION
 
   private readonly apiUrl = `${environment.apiUrl}`;
-  private readonly consultaDisponibilidad$ =
-    new Subject<ConsultaDisponibilidad | null>();
+  private readonly consultaDisponibilidad$ = new Subject<ConsultaDisponibilidad | null>();
 
   //#endregion
 
