@@ -1,0 +1,556 @@
+<div class="agenda-container">
+
+  <!-- ENCABEZADO -->
+
+  <div class="page-header">
+
+    <div class="header-icon">
+      <i class="fa-solid fa-calendar-plus"></i>
+    </div>
+
+    <div class="header-content">
+
+      <h1>Agendar cita médica</h1>
+
+      <p>
+        Gestione la programación de citas médicas.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-regresar"
+      [disabled]="guardando()"
+      (click)="regresar()"
+    >
+
+      <i class="fa-solid fa-arrow-left"></i>
+
+      Regresar
+
+    </button>
+
+  </div>
+
+
+  <!-- FORMULARIO -->
+
+  <div class="agenda-card">
+
+    <div class="card-header">
+
+      <h2>
+        <i class="fa-solid fa-clipboard-list"></i>
+        Información de la cita
+      </h2>
+
+      <p>Complete los campos obligatorios.</p>
+
+    </div>
+
+    <form
+      [formGroup]="formulario"
+      (ngSubmit)="guardarCita()"
+      novalidate
+    >
+
+      <div class="card-body">
+
+        <div class="form-grid">
+
+          <!-- PACIENTE -->
+
+          <div class="form-group">
+
+            <label for="paciente">
+              Paciente
+              <span class="required">*</span>
+            </label>
+
+            <select
+              id="paciente"
+              class="form-control"
+              formControlName="paciente_id"
+              (change)="consultarDisponibilidad()"
+              [class.is-invalid]="campoInvalido('paciente_id')"
+            >
+
+              <option [ngValue]="null">
+
+                {{
+                  cargandoCatalogos()
+                    ? 'Cargando pacientes...'
+                    : 'Seleccione un paciente'
+                }}
+
+              </option>
+
+              @for (paciente of pacientes(); track paciente.id) {
+
+                <option [ngValue]="paciente.id">
+
+                  {{ paciente.apellidos }}
+                  {{ paciente.nombres }}
+                  - {{ paciente.cedula }}
+
+                </option>
+
+              }
+
+            </select>
+
+            @if (campoInvalido('paciente_id')) {
+
+              <small class="validation-error">
+                Debe seleccionar un paciente.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- MEDICO -->
+
+          <div class="form-group">
+
+            <label for="medico">
+              Médico
+              <span class="required">*</span>
+            </label>
+
+            <select
+              id="medico"
+              class="form-control"
+              formControlName="medico_id"
+              (change)="consultarDisponibilidad()"
+              [class.is-invalid]="campoInvalido('medico_id')"
+            >
+
+              <option [ngValue]="null">
+
+                {{
+                  cargandoCatalogos()
+                    ? 'Cargando médicos...'
+                    : 'Seleccione un médico'
+                }}
+
+              </option>
+
+              @for (medico of medicos(); track medico.id) {
+
+                <option [ngValue]="medico.id">
+
+                  {{ medico.apellidos }}
+                  {{ medico.nombres }}
+                  - {{ medico.especialidad }}
+
+                </option>
+
+              }
+
+            </select>
+
+            @if (campoInvalido('medico_id')) {
+
+              <small class="validation-error">
+                Debe seleccionar un médico.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- FECHA -->
+
+          <div class="form-group">
+
+            <label for="fecha">
+              Fecha de atención
+              <span class="required">*</span>
+            </label>
+
+            <input
+              id="fecha"
+              type="date"
+              class="form-control"
+              formControlName="fecha"
+              [min]="fechaMinima"
+              (change)="consultarDisponibilidad()"
+              [class.is-invalid]="campoInvalido('fecha')"
+            />
+
+            @if (campoInvalido('fecha')) {
+
+              <small class="validation-error">
+                Debe seleccionar una fecha válida.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- ESTADO -->
+
+          <div class="form-group">
+
+            <label>Estado de la cita</label>
+
+            <div class="estado-container">
+
+              <span class="estado-badge">
+
+                <i class="fa-regular fa-clock"></i>
+
+                Programada
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- HORARIOS -->
+
+        <section class="horarios-section">
+
+          <div class="section-header">
+
+            <h3>
+
+              <i class="fa-regular fa-clock"></i>
+
+              Horarios de atención
+
+              <span class="required">*</span>
+
+            </h3>
+
+            <p>
+              Horarios de 08:00 a 16:30,
+              en intervalos de 30 minutos.
+            </p>
+
+          </div>
+
+
+          <!-- CARGANDO HORARIOS -->
+
+          @if (cargandoHorarios()) {
+
+            <div class="empty-state">
+
+              <i class="fa-solid fa-spinner fa-spin"></i>
+
+              <p>Consultando horarios disponibles...</p>
+
+            </div>
+
+          } @else if (!disponibilidadConsultada()) {
+
+            <div class="empty-state">
+
+              <i class="fa-regular fa-calendar"></i>
+
+              <h4>Consulte la disponibilidad</h4>
+
+              <p>
+                Seleccione un paciente, un médico y una fecha
+                para visualizar los horarios de atención.
+              </p>
+
+              @if (
+                formulario.controls.paciente_id.valid &&
+                formulario.controls.medico_id.valid &&
+                formulario.controls.fecha.valid
+              ) {
+
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  [disabled]="guardando() || cargandoCatalogos()"
+                  (click)="consultarDisponibilidad()"
+                >
+
+                  <i class="fa-solid fa-rotate"></i>
+
+                  Consultar disponibilidad
+
+                </button>
+
+              }
+
+            </div>
+
+          } @else {
+
+            <!-- RESUMEN DE HORARIOS -->
+
+            <div class="horarios-resumen">
+
+              <div class="resumen-item disponible">
+
+                <span class="indicador"></span>
+
+                {{ totalDisponibles() }} disponibles
+
+              </div>
+
+              <div class="resumen-item ocupado">
+
+                <span class="indicador"></span>
+
+                {{ totalOcupados() }} ocupados
+
+              </div>
+
+              <div class="resumen-item transcurrido">
+
+                <span class="indicador"></span>
+
+                {{ totalTranscurridos() }} transcurridos
+
+              </div>
+
+              <div class="resumen-item seleccionado">
+
+                <span class="indicador"></span>
+
+                Seleccionado
+
+              </div>
+
+            </div>
+
+
+            <!-- LISTA DE HORARIOS -->
+
+            <div class="horarios-grid">
+
+              @for (horario of horarios(); track horario.hora) {
+
+                <button
+                  type="button"
+                  class="horario-item"
+
+                  [class.horario-disponible]="
+                    horario.disponible
+                  "
+
+                  [class.horario-ocupado]="
+                    horario.ocupado && !horario.transcurrido
+                  "
+
+                  [class.horario-transcurrido]="
+                    horario.transcurrido
+                  "
+
+                  [class.horario-seleccionado]="
+                    horarioSeleccionado() === horario.hora
+                  "
+
+                  [disabled]="
+                    !horario.disponible ||
+                    horario.ocupado ||
+                    horario.transcurrido ||
+                    guardando() ||
+                    cargandoHorarios()
+                  "
+
+                  [attr.aria-pressed]="
+                    horarioSeleccionado() === horario.hora
+                  "
+
+                  [attr.title]="
+                    horario.transcurrido
+                      ? 'El horario ya ha transcurrido'
+                      : horario.ocupado
+                        ? 'Horario ocupado'
+                        : 'Horario disponible'
+                  "
+
+                  (click)="seleccionarHorario(horario)"
+                >
+
+                  <i
+                    class="fa-solid"
+                    [ngClass]="
+                      horario.transcurrido
+                        ? 'fa-clock-rotate-left'
+                        : horario.ocupado
+                          ? 'fa-lock'
+                          : horarioSeleccionado() === horario.hora
+                            ? 'fa-check'
+                            : 'fa-clock'
+                    "
+                  ></i>
+
+                  <span>{{ horario.hora }}</span>
+
+                </button>
+
+              }
+
+            </div>
+
+
+            <!-- SIN HORARIOS DISPONIBLES -->
+
+            @if (totalDisponibles() === 0) {
+
+              <div class="alert alert-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                No existen horarios disponibles.
+                Seleccione otra fecha o médico.
+
+              </div>
+
+            }
+
+
+            <!-- HORARIO SELECCIONADO -->
+
+            @if (horarioSeleccionado()) {
+
+              <div class="horario-confirmacion">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Horario seleccionado:
+
+                <strong>{{ horarioSeleccionado() }}</strong>
+
+              </div>
+
+            }
+
+          }
+
+
+          <!-- VALIDACION HORARIO -->
+
+          @if (campoInvalido('hora')) {
+
+            <small class="validation-error">
+              Debe seleccionar un horario disponible.
+            </small>
+
+          }
+
+        </section>
+
+
+        <!-- MOTIVO -->
+
+        <div class="form-group motivo-group">
+
+          <label for="motivo">
+
+            Motivo de la consulta
+
+            <span class="required">*</span>
+
+          </label>
+
+          <textarea
+            id="motivo"
+            class="form-control"
+            formControlName="motivo"
+            rows="4"
+            placeholder="Ingrese el motivo de la consulta médica..."
+            [class.is-invalid]="campoInvalido('motivo')"
+          ></textarea>
+
+          @if (campoInvalido('motivo')) {
+
+            <small class="validation-error">
+              Debe ingresar el motivo de la consulta.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- INFORMACION -->
+
+        <div class="info-box">
+
+          <i class="fa-solid fa-circle-info"></i>
+
+          <div>
+
+            <strong>Información importante</strong>
+
+            <p>
+              El sistema verificará la disponibilidad
+              del médico y del paciente antes de
+              registrar la cita.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACCIONES -->
+
+      <div class="card-footer">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          [disabled]="guardando()"
+          (click)="limpiarFormulario()"
+        >
+
+          <i class="fa-solid fa-eraser"></i>
+
+          Limpiar
+
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="
+            guardando() ||
+            cargandoCatalogos() ||
+            cargandoHorarios() ||
+            !disponibilidadConsultada()
+          "
+        >
+
+          @if (guardando()) {
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            Guardando...
+
+          } @else {
+
+            <i class="fa-solid fa-calendar-check"></i>
+
+            Agendar cita
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

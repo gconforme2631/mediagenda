@@ -1,0 +1,818 @@
+<div class="gestion-container">
+
+  <!-- =====================================
+       ENCABEZADO
+  ====================================== -->
+
+  <div class="page-header">
+
+    <div class="header-info">
+
+      <div class="header-icon">
+
+        <i class="fa-solid fa-calendar-days"></i>
+
+      </div>
+
+      <div class="header-content">
+
+        <h1>Gestión de citas médicas</h1>
+
+        <p>
+          Administre la agenda de atención médica.
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="procesando()"
+      (click)="nuevaCita()"
+    >
+
+      <i class="fa-solid fa-plus"></i>
+
+      Nueva cita
+
+    </button>
+
+  </div>
+
+  <!-- =====================================
+       INDICADORES
+  ====================================== -->
+
+  <div class="indicadores-grid">
+
+    <!-- TOTAL CITAS -->
+
+    <button
+      type="button"
+      class="indicador-card total"
+      [class.activo]="filtroEstado() === ''"
+      [attr.aria-pressed]="filtroEstado() === ''"
+      (click)="seleccionarEstado('')"
+    >
+
+      <div class="indicador-icon">
+
+        <i class="fa-solid fa-calendar-days"></i>
+
+      </div>
+
+      <div class="indicador-content">
+
+        <span>Total de citas</span>
+
+        <strong>{{ totalCitas() }}</strong>
+
+        <small>Fecha seleccionada</small>
+
+      </div>
+
+    </button>
+
+    <!-- PROGRAMADAS -->
+
+    <button
+      type="button"
+      class="indicador-card programadas"
+      [class.activo]="filtroEstado() === 'programada'"
+      [attr.aria-pressed]="filtroEstado() === 'programada'"
+      (click)="seleccionarEstado('programada')"
+    >
+
+      <div class="indicador-icon">
+
+        <i class="fa-solid fa-calendar-check"></i>
+
+      </div>
+
+      <div class="indicador-content">
+
+        <span>Programadas</span>
+
+        <strong>{{ totalProgramadas() }}</strong>
+
+        <small>Pendientes de atención</small>
+
+      </div>
+
+    </button>
+
+    <!-- ATENDIDAS -->
+
+    <button
+      type="button"
+      class="indicador-card atendidas"
+      [class.activo]="filtroEstado() === 'atendida'"
+      [attr.aria-pressed]="filtroEstado() === 'atendida'"
+      (click)="seleccionarEstado('atendida')"
+    >
+
+      <div class="indicador-icon">
+
+        <i class="fa-solid fa-circle-check"></i>
+
+      </div>
+
+      <div class="indicador-content">
+
+        <span>Atendidas</span>
+
+        <strong>{{ totalAtendidas() }}</strong>
+
+        <small>Atenciones realizadas</small>
+
+      </div>
+
+    </button>
+
+    <!-- CANCELADAS -->
+
+    <button
+      type="button"
+      class="indicador-card canceladas"
+      [class.activo]="filtroEstado() === 'cancelada'"
+      [attr.aria-pressed]="filtroEstado() === 'cancelada'"
+      (click)="seleccionarEstado('cancelada')"
+    >
+
+      <div class="indicador-icon">
+
+        <i class="fa-solid fa-calendar-xmark"></i>
+
+      </div>
+
+      <div class="indicador-content">
+
+        <span>Canceladas</span>
+
+        <strong>{{ totalCanceladas() }}</strong>
+
+        <small>Citas no realizadas</small>
+
+      </div>
+
+    </button>
+
+  </div>
+
+  <!-- =====================================
+       TARJETA PRINCIPAL
+  ====================================== -->
+
+  <div class="agenda-card">
+
+    <div class="card-header">
+
+      <div class="card-header-info">
+
+        <h2>
+
+          <i class="fa-solid fa-list-check"></i>
+
+          Agenda médica
+
+        </h2>
+
+        <div class="fecha-descripcion">
+
+          <i class="fa-regular fa-calendar"></i>
+
+          {{ formatearFecha(filtroFecha()) }}
+
+          @if (esFechaActual()) {
+
+            <span class="hoy-badge">
+              Hoy
+            </span>
+
+          }
+
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="cargando() || procesando()"
+        (click)="cargarCitas()"
+      >
+
+        <i
+          class="fa-solid fa-rotate"
+          [class.fa-spin]="cargando()"
+        ></i>
+
+        Actualizar
+
+      </button>
+
+    </div>
+
+    <!-- ===================================
+         FILTROS
+    ==================================== -->
+
+    <div class="filtros-container">
+
+      <div class="filtros-grid">
+
+        <!-- FECHA -->
+
+        <div class="form-group">
+
+          <label for="fecha">
+
+            Fecha de atención
+
+          </label>
+
+          <div class="fecha-group">
+
+            <button
+              type="button"
+              class="btn-icon"
+              title="Día anterior"
+              aria-label="Día anterior"
+              [disabled]="procesando()"
+              (click)="cambiarDia(-1)"
+            >
+
+              <i class="fa-solid fa-chevron-left"></i>
+
+            </button>
+
+            <input
+              id="fecha"
+              type="date"
+              class="form-control"
+              [ngModel]="filtroFecha()"
+              [disabled]="procesando()"
+              (ngModelChange)="cambiarFecha($event)"
+            />
+
+            <button
+              type="button"
+              class="btn-icon"
+              title="Día siguiente"
+              aria-label="Día siguiente"
+              [disabled]="procesando()"
+              (click)="cambiarDia(1)"
+            >
+
+              <i class="fa-solid fa-chevron-right"></i>
+
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-hoy"
+              [disabled]="procesando()"
+              (click)="consultarHoy()"
+            >
+
+              Hoy
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- BUSQUEDA -->
+
+        <div class="form-group">
+
+          <label for="busqueda">
+
+            Buscar paciente o médico
+
+          </label>
+
+          <div class="input-icon">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="busqueda"
+              type="text"
+              class="form-control"
+              placeholder="Nombre, apellido o cédula..."
+              autocomplete="off"
+              [ngModel]="filtroBusqueda()"
+              (ngModelChange)="filtroBusqueda.set($event)"
+            />
+
+          </div>
+
+        </div>
+
+        <!-- ESTADO -->
+
+        <div class="form-group">
+
+          <label for="estado">
+
+            Estado de la cita
+
+          </label>
+
+          <select
+            id="estado"
+            class="form-control"
+            [ngModel]="filtroEstado()"
+            (ngModelChange)="filtroEstado.set($event)"
+          >
+
+            <option value="">
+              Todos los estados
+            </option>
+
+            <option value="programada">
+              Programada
+            </option>
+
+            <option value="atendida">
+              Atendida
+            </option>
+
+            <option value="cancelada">
+              Cancelada
+            </option>
+
+          </select>
+
+        </div>
+
+        <!-- LIMPIAR -->
+
+        <div class="filtro-accion">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            [disabled]="procesando()"
+            (click)="limpiarFiltros()"
+          >
+
+            <i class="fa-solid fa-eraser"></i>
+
+            Limpiar
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ===================================
+         CARGANDO
+    ==================================== -->
+
+    @if (cargando()) {
+
+      <div class="empty-state" role="status">
+
+        <div class="empty-icon">
+
+          <i class="fa-solid fa-spinner fa-spin"></i>
+
+        </div>
+
+        <h3>Consultando agenda médica</h3>
+
+        <p>Espere un momento, por favor.</p>
+
+      </div>
+
+    } @else if (mensajeError()) {
+
+      <!-- ERROR -->
+
+      <div class="empty-state error-state">
+
+        <div class="empty-icon">
+
+          <i class="fa-solid fa-circle-exclamation"></i>
+
+        </div>
+
+        <h3>Error al consultar las citas</h3>
+
+        <p role="alert">
+
+          {{ mensajeError() }}
+
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cargarCitas()"
+        >
+
+          <i class="fa-solid fa-rotate"></i>
+
+          Reintentar
+
+        </button>
+
+      </div>
+
+    } @else if (citasFiltradas().length === 0) {
+
+      <!-- SIN REGISTROS -->
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i class="fa-regular fa-calendar"></i>
+
+        </div>
+
+        @if (totalCitas() === 0) {
+
+          <h3>No existen citas registradas</h3>
+
+          <p>
+
+            No se encontraron citas médicas
+            para el día
+            {{ formatearFecha(filtroFecha()) }}.
+
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="procesando()"
+            (click)="nuevaCita()"
+          >
+
+            <i class="fa-solid fa-plus"></i>
+
+            Agendar nueva cita
+
+          </button>
+
+        } @else {
+
+          <h3>No se encontraron coincidencias</h3>
+
+          <p>
+
+            No existen citas que coincidan
+            con los filtros seleccionados.
+
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="filtroBusqueda.set(''); filtroEstado.set('')"
+          >
+
+            <i class="fa-solid fa-eraser"></i>
+
+            Quitar filtros
+
+          </button>
+
+        }
+
+      </div>
+
+    } @else {
+
+      <!-- =================================
+           TABLA DE CITAS
+      ================================== -->
+
+      <div class="table-responsive">
+
+        <table class="citas-table">
+
+          <thead>
+
+            <tr>
+
+              <th scope="col">N.º</th>
+
+              <th scope="col">Hora</th>
+
+              <th scope="col">Paciente</th>
+
+              <th scope="col">Médico</th>
+
+              <th scope="col">Fecha</th>
+
+              <th scope="col">Motivo</th>
+
+              <th scope="col">Estado</th>
+
+              <th
+                scope="col"
+                class="text-center"
+              >
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              cita of citasFiltradas();
+              track cita.id;
+              let i = $index
+            ) {
+
+              <tr
+                [class.fila-cancelada]="
+                  cita.estado === 'cancelada'
+                "
+              >
+
+                <!-- NUMERO -->
+
+                <td class="numero-fila">
+
+                  {{ i + 1 }}
+
+                </td>
+
+                <!-- HORA -->
+
+                <td>
+
+                  <span class="hora-badge">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                    {{ cita.hora }}
+
+                  </span>
+
+                </td>
+
+                <!-- PACIENTE -->
+
+                <td>
+
+                  <div class="persona-info">
+
+                    <div class="persona-avatar">
+
+                      <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                    <div class="persona-detalle">
+
+                      <strong>
+
+                        {{ cita.paciente_apellidos }}
+                        {{ cita.paciente_nombres }}
+
+                      </strong>
+
+                      <small>
+
+                        CI: {{ cita.paciente_cedula }}
+
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <!-- MEDICO -->
+
+                <td>
+
+                  <div class="persona-info">
+
+                    <div class="medico-avatar">
+
+                      <i class="fa-solid fa-user-doctor"></i>
+
+                    </div>
+
+                    <div class="persona-detalle">
+
+                      <strong>
+
+                        {{ cita.medico_apellidos }}
+                        {{ cita.medico_nombres }}
+
+                      </strong>
+
+                      <small>
+
+                        {{ cita.medico_especialidad }}
+
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <!-- FECHA -->
+
+                <td class="nowrap">
+
+                  {{ formatearFecha(cita.fecha) }}
+
+                </td>
+
+                <!-- MOTIVO -->
+
+                <td>
+
+                  <span
+                    class="motivo-text"
+                    [attr.title]="cita.motivo"
+                  >
+
+                    {{ cita.motivo }}
+
+                  </span>
+
+                </td>
+
+                <!-- ESTADO -->
+
+                <td>
+
+                  <span
+                    class="estado-badge"
+
+                    [class.estado-programada]="
+                      cita.estado === 'programada'
+                    "
+
+                    [class.estado-atendida]="
+                      cita.estado === 'atendida'
+                    "
+
+                    [class.estado-cancelada]="
+                      cita.estado === 'cancelada'
+                    "
+                  >
+
+                    <span class="estado-dot"></span>
+
+                    {{ obtenerNombreEstado(cita.estado) }}
+
+                  </span>
+
+                </td>
+
+                <!-- ACCIONES -->
+
+                <td class="text-center">
+
+                  @if (cita.estado === 'programada') {
+
+                    <button
+                      type="button"
+                      class="btn-cancelar"
+
+                      [disabled]="
+                        procesando() || cargando()
+                      "
+
+                      (click)="confirmarCancelacion(cita)"
+                    >
+
+                      @if (
+                        procesando() &&
+                        citaProcesandoId() === cita.id
+                      ) {
+
+                        <i
+                          class="fa-solid fa-spinner fa-spin"
+                        ></i>
+
+                        Procesando
+
+                      } @else {
+
+                        <i
+                          class="fa-solid fa-calendar-xmark"
+                        ></i>
+
+                        Cancelar
+
+                      }
+
+                    </button>
+
+                  } @else {
+
+                    <span class="sin-acciones">
+
+                      <i class="fa-solid fa-lock"></i>
+
+                      Sin acciones
+
+                    </span>
+
+                  }
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+    <!-- ===================================
+         PIE DE TABLA
+    ==================================== -->
+
+    <div class="card-footer">
+
+      <div class="footer-registros">
+
+        Mostrando
+
+        <strong>
+
+          {{ citasFiltradas().length }}
+
+        </strong>
+
+        de
+
+        <strong>
+
+          {{ totalCitas() }}
+
+        </strong>
+
+        citas registradas.
+
+      </div>
+
+      <div class="footer-fecha">
+
+        <i class="fa-regular fa-calendar"></i>
+
+        {{ formatearFecha(filtroFecha()) }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =====================================
+       INFORMACION
+  ====================================== -->
+
+  <div class="info-box">
+
+    <i class="fa-solid fa-circle-info"></i>
+
+    <div>
+
+      <strong>Información importante</strong>
+
+      <p>
+
+        La cancelación de una cita conserva
+        su historial y libera el horario
+        correspondiente si aún no ha transcurrido.
+        Las citas atendidas o canceladas no pueden
+        cancelarse nuevamente.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
