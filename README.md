@@ -95,6 +95,15 @@ ng serve
 - Frontend: http://localhost:4200
 - Estado de la API: http://localhost:3000/api/salud
 
+### Datos de prueba
+
+```bash
+cd api
+npm run seed
+```
+
+Carga 6 pacientes, 4 médicos y 10 citas (atendidas, programadas y canceladas, con fechas relativas al día de la carga). Se puede ejecutar varias veces sin duplicar. Los datos están en `db/seed.sql`.
+
 ## Pruebas
 
 ```bash
