@@ -12,7 +12,7 @@ Actividad AA-1 · Plataformas de Desarrollo de Software · Maestría en Ingenier
 |---|---|---|
 | 1. Gustavo Conforme | gconforme2631 | Repositorio, estructura, conexión SQLite, formato de errores, Angular base, módulo Pacientes |
 | 2. Diego Albuja | dfalbuja  | `schema.sql`, módulo Médicos, diseño responsive general |
-| 3. Ricardo Sigcha | RickyLeo2016 | Datos de prueba iniciales, módulo Citas |
+| 3. Ricardo Sigcha | rsigcha0902-glitch | Datos de prueba iniciales, módulo Citas |
 
 ## Tecnologías
 
@@ -107,7 +107,7 @@ Carga 6 pacientes, 4 médicos y 10 citas (atendidas, programadas y canceladas, c
 ## Pruebas
 
 ```bash
-# Backend: 35 pruebas (Pacientes 22, Médicos 13)
+# Backend: 88 pruebas (Pacientes 22, Médicos 13, Citas 53)
 cd api
 npm test
 
@@ -140,7 +140,10 @@ ng test --watch=false
 | GET, PUT, DELETE | `/api/pacientes/:id` | Disponible |
 | GET, POST | `/api/medicos` | Disponible |
 | GET, PUT, DELETE | `/api/medicos/:id` | Disponible |
-| — | `/api/citas` | En desarrollo |
+| GET, POST | `/api/citas` | Disponible |
+| GET, PUT | `/api/citas/:id` | Disponible |
+| PATCH | `/api/citas/:id/estado` | Disponible |
+| GET | `/api/citas/disponibilidad` | Disponible |
 
 ### Reglas del módulo Pacientes
 
