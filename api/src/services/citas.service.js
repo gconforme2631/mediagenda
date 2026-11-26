@@ -85,13 +85,15 @@ export function actualizar(id, datos) {
 
   const cita = validarCita(datos);
 
-  // El cambio de estado se realiza por su propio endpoint.
   cita.estado = existente.estado;
 
   verificarPaciente(cita.paciente_id);
   verificarMedico(cita.medico_id);
 
   verificarFecha(cita.fecha);
+
+  // Validar la hora actual del sistema.
+  verificarHorario(cita.fecha, cita.hora);
 
   verificarDisponibilidad(cita, id);
 

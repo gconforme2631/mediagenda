@@ -1,5 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
+import { environment } from '../../../environments/environment';
+
 import {
   HttpClient,
   HttpParams
@@ -61,8 +63,7 @@ export class Citas {
 
   //#region CONFIGURACION
 
-  private readonly apiUrl =
-    'http://localhost:3000/api/citas';
+  private readonly apiUrl = `${environment.apiUrl}/citas`;
 
   //#endregion
 

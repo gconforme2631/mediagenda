@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 
+
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -36,6 +37,7 @@ import {
 } from '@angular/core/rxjs-interop';
 
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 import {
   Citas,
@@ -104,9 +106,7 @@ export class Agendarcita implements OnInit {
 
   //#region CONFIGURACION
 
-  private readonly apiUrl =
-    'http://localhost:3000/api';
-
+  private readonly apiUrl = `${environment.apiUrl}`;
   private readonly consultaDisponibilidad$ =
     new Subject<ConsultaDisponibilidad | null>();
 
