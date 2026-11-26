@@ -15,8 +15,9 @@ export const routes: Routes = [
   },
   {
     path: 'citas',
-    title: 'Citas | MediAgenda',
-    loadChildren: () => import('./citas/citas.routes').then((m) => m.CITAS_ROUTES),
+    loadChildren: () =>
+      import('./citas/citas.routes')
+        .then(m => m.citasRoutes)
   },
   { path: '**', redirectTo: 'pacientes' },
 ];
